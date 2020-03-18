@@ -32,7 +32,7 @@ class FeatureActivity : BaseActivity<FeatureViewModel>() {
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe (
                 { photos -> Timber.d("photos size = %d", photos.size) },
-                {error -> Timber.e(error)}
+                { error -> Timber.e(error) }
             )
         )
     }

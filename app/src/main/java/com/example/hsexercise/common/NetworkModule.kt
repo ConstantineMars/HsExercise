@@ -4,6 +4,8 @@ import com.example.hsexercise.BuildConfig
 import com.google.gson.FieldNamingPolicy
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
+import dagger.Module
+import dagger.Provides
 import io.reactivex.schedulers.Schedulers
 import okhttp3.Interceptor
 import okhttp3.OkHttpClient
@@ -16,13 +18,18 @@ import retrofit2.converter.gson.GsonConverterFactory
 import java.util.concurrent.TimeUnit
 import javax.net.ssl.HostnameVerifier
 
-object NetworkProvider {
-    fun provideRestClient() =
+@Module
+object NetworkModule {
+    @Provides
+    fun provideRestClient() : RestClient =
         RestClient(RestClientConfig(
             provideGsonConverterFactory(),
             provideRxJava2CallAdapterFactory()).apply {
             addInterceptor(provideHttpLoggingInterceptor())
         })
+
+    @Provides
+    fun providesRetrofit(restClient: RestClient): Retrofit = restClient.createRetrofitAdapter()
 
     private fun provideGson(): Gson = GsonBuilder()
         .setFieldNamingPolicy(FieldNamingPolicy.LOWER_CASE_WITH_UNDERSCORES)
@@ -47,6 +54,7 @@ object NetworkProvider {
 }
 
 class RestClient(private val restClientConfig: RestClientConfig) {
+
     fun createRetrofitAdapter(hostUrl: String = "https://picsum.photos/"): Retrofit = Retrofit.Builder()
         .addCallAdapterFactory(restClientConfig.callAdapterFactory)
         .addConverterFactory(restClientConfig.converterFactory)
