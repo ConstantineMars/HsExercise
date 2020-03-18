@@ -12,7 +12,7 @@ import timber.log.Timber
 class FeatureActivity : BaseActivity<FeatureViewModel>() {
     override val viewModelClass = FeatureViewModel::class.java
     override val layoutResId = R.layout.activity_feature
-    val compositeDisposable = CompositeDisposable()
+    private val compositeDisposable = CompositeDisposable()
 
     override fun provideViewModelFactory() = FeatureViewModel.Factory()
 
