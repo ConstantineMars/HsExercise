@@ -2,7 +2,7 @@ package com.example.hsexercise.common.di.modules
 
 import android.content.Context
 import androidx.room.Room
-import com.example.hsexercise.common.database.Database
+import com.example.hsexercise.common.database.PhotoDatabase
 import dagger.Module
 import dagger.Provides
 import javax.inject.Singleton
@@ -13,8 +13,8 @@ const val DATABASE_NAME = "headspace-database"
 object DatabaseModule {
 
     @Provides @Singleton
-    fun provideRoomDatabase(applicationContext: Context): Database {
-        return Room.databaseBuilder(applicationContext, Database::class.java,
+    fun provideRoomDatabase(applicationContext: Context): PhotoDatabase {
+        return Room.databaseBuilder(applicationContext, PhotoDatabase::class.java,
                 DATABASE_NAME
             )
             .fallbackToDestructiveMigration()

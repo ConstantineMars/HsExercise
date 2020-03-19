@@ -16,12 +16,9 @@ abstract class BaseActivity<VM : ViewModel> : AppCompatActivity() {
         onBeforeViewLoad(savedInstanceState)
 
         setContentView(layoutResId)
-        viewModel = ViewModelProvider(this, provideViewModelFactory()).get(viewModelClass)
+        viewModel = ViewModelProvider(this).get(viewModelClass)
         onViewLoad(savedInstanceState)
     }
-
-    abstract fun provideViewModelFactory(): ViewModelProvider.Factory
-
     open fun onBeforeViewLoad(savedInstanceState: Bundle?) {
         // Intentionally empty so that subclasses can override if necessary
     }

@@ -8,8 +8,8 @@ data class Photo(
     @PrimaryKey
     val id: String,
     val author: String,
-    val download_url: String,
-    val height: Int,
     val url: String,
-    val width: Int
+    val download_url: String,
+    val width: Int,
+    val height: Int
 )

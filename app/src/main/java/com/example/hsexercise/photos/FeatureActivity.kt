@@ -1,6 +1,7 @@
 package com.example.hsexercise.photos
 
 import android.os.Bundle
+import androidx.lifecycle.Observer
 import com.example.hsexercise.R
 import com.example.hsexercise.App
 import com.example.hsexercise.common.BaseActivity
@@ -18,8 +19,6 @@ class FeatureActivity : BaseActivity<FeatureViewModel>() {
     @Inject
     lateinit var photoService: PhotoService
 
-    override fun provideViewModelFactory() = FeatureViewModel.Factory()
-
     override fun onBeforeViewLoad(savedInstanceState: Bundle?) {
         super.onBeforeViewLoad(savedInstanceState)
         (application as App).appComponent.injectFeatureActivity(this)
@@ -35,6 +34,13 @@ class FeatureActivity : BaseActivity<FeatureViewModel>() {
                 { error -> Timber.e(error) }
             )
         )
+
+        viewModel.photos.observe(this, Observer { words ->
+            words?.let {
+                Timber.d( "count: %d", it.size)
+//                adapter.setWords(it)
+            }
+        })
     }
 
     override fun onDestroy() {

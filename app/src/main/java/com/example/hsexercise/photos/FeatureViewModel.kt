@@ -1,13 +1,24 @@
 package com.example.hsexercise.photos
 
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.ViewModelProvider
+import android.app.Application
+import androidx.lifecycle.*
+import com.example.hsexercise.common.database.PhotoDatabase
+import com.example.hsexercise.photos.model.Photo
+import com.example.hsexercise.photos.repository.PhotoRepository
+import kotlinx.coroutines.launch
 
-class FeatureViewModel : ViewModel() {
+class FeatureViewModel(application: Application) : AndroidViewModel(application) {
 
-    class Factory :
-        ViewModelProvider.Factory {
-        @Suppress("UNCHECKED_CAST")
-        override fun <T : ViewModel> create(modelClass: Class<T>) = FeatureViewModel() as T
+    private val repository: PhotoRepository
+    val photos: LiveData<List<Photo>>
+
+    init {
+        val photoDao = PhotoDatabase.getDatabase(application).photoDao()
+        repository = PhotoRepository(photoDao)
+        photos = repository.photos
+    }
+
+    fun insert(photo: Photo) = viewModelScope.launch {
+        repository.insert(photo)
     }
 }
