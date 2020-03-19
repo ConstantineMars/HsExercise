@@ -7,7 +7,6 @@ import android.view.MenuItem
 import androidx.core.view.isVisible
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.example.hsexercise.R
 import com.example.hsexercise.App
@@ -16,14 +15,15 @@ import com.example.hsexercise.photos.network.PhotoService
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
-import kotlinx.android.synthetic.main.activity_feature.*
+import kotlinx.android.synthetic.main.activity_photos.*
 import kotlinx.android.synthetic.main.empty.*
+import kotlinx.android.synthetic.main.error.*
 import timber.log.Timber
 import javax.inject.Inject
 
 class PhotoListActivity : BaseActivity<PhotoViewModel>() {
     override val viewModelClass = PhotoViewModel::class.java
-    override val layoutResId = R.layout.activity_feature
+    override val layoutResId = R.layout.activity_photos
     private val compositeDisposable = CompositeDisposable()
     @Inject
     lateinit var photoService: PhotoService
@@ -38,8 +38,13 @@ class PhotoListActivity : BaseActivity<PhotoViewModel>() {
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe (
-                { photos -> viewModel.insertAll(photos) },
-                { error -> Timber.e(error) }
+                { photos ->
+                    viewModel.insertAll(photos)
+                },
+                { error ->
+                    showError()
+                    Timber.e(error)
+                }
             )
         )
 
@@ -51,7 +56,7 @@ class PhotoListActivity : BaseActivity<PhotoViewModel>() {
                 if(it.isEmpty()) {
                     showEmpty()
                 } else {
-                    hideEmpty()
+                    showContent()
                 }
             }
         })
@@ -111,12 +116,20 @@ class PhotoListActivity : BaseActivity<PhotoViewModel>() {
     }
 
     private fun showEmpty() {
+        emptyView.isVisible = true
         recyclerView.isVisible = false
-        empty.isVisible = true
+        errorView.isVisible = false
     }
 
-    private fun hideEmpty() {
+    private fun showContent() {
         recyclerView.isVisible = true
-        empty.isVisible = false
+        emptyView.isVisible = false
+        errorView.isVisible = false
+    }
+
+    private fun showError() {
+        errorView.isVisible = true
+        emptyView.isVisible = false
+        recyclerView.isVisible = false
     }
 }
