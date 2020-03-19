@@ -2,7 +2,6 @@ package com.example.hsexercise.photos
 
 import android.os.Bundle
 import androidx.lifecycle.Observer
-import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.example.hsexercise.R
@@ -15,8 +14,8 @@ import io.reactivex.schedulers.Schedulers
 import timber.log.Timber
 import javax.inject.Inject
 
-class PhotoListActivity : BaseActivity<FeatureViewModel>() {
-    override val viewModelClass = FeatureViewModel::class.java
+class PhotoListActivity : BaseActivity<PhotoViewModel>() {
+    override val viewModelClass = PhotoViewModel::class.java
     override val layoutResId = R.layout.activity_feature
     private val compositeDisposable = CompositeDisposable()
     @Inject

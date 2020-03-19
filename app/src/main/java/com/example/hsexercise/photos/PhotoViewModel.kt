@@ -8,7 +8,7 @@ import com.example.hsexercise.photos.model.Photo
 import com.example.hsexercise.photos.repository.PhotoRepository
 import kotlinx.coroutines.launch
 
-class FeatureViewModel(application: Application) : AndroidViewModel(application) {
+class PhotoViewModel(application: Application) : AndroidViewModel(application) {
 
     private val repository: PhotoRepository
     val photos: LiveData<List<Photo>>
