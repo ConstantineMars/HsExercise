@@ -32,7 +32,9 @@ class PhotoListActivity : BaseActivity<FeatureViewModel>() {
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe (
-                { photos -> Timber.d("photos size = %d", photos.size) },
+                { photos -> viewModel.insertAll(photos)
+                    //Timber.d("photos size = %d", photos.size)
+                },
                 { error -> Timber.e(error) }
             )
         )

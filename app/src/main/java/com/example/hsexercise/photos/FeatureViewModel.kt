@@ -1,6 +1,7 @@
 package com.example.hsexercise.photos
 
 import android.app.Application
+import androidx.annotation.WorkerThread
 import androidx.lifecycle.*
 import com.example.hsexercise.common.database.PhotoDatabase
 import com.example.hsexercise.photos.model.Photo
@@ -20,5 +21,9 @@ class FeatureViewModel(application: Application) : AndroidViewModel(application)
 
     fun insert(photo: Photo) = viewModelScope.launch {
         repository.insert(photo)
+    }
+
+    fun insertAll(photos: List<Photo>) = viewModelScope.launch {
+        repository.insertAll(photos)
     }
 }
