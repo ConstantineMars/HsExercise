@@ -17,11 +17,11 @@ class PhotoListAdapter internal constructor(
     private var photos = emptyList<Photo>() // Cached copy of words
 
     inner class PhotoViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        val wordItemView: TextView = itemView.findViewById(R.id.textView)
+        val wordItemView: TextView = itemView.findViewById(R.id.authorLabel)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): PhotoViewHolder {
-        val itemView = inflater.inflate(R.layout.recyclerview_item, parent, false)
+        val itemView = inflater.inflate(R.layout.photo_item, parent, false)
         return PhotoViewHolder(itemView)
     }
 
