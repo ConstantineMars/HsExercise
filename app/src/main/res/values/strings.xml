@@ -2,4 +2,8 @@
     <string name="app_name">Photos</string>
     <string name="list">List</string>
     <string name="grid">Grid</string>
+    <string name="loading">Loading</string>
+    <string name="no_photos">No photos</string>
+    <string name="error">Error</string>
+    <string name="offline">Offline</string>
 </resources>

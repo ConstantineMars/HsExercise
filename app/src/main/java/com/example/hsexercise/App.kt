@@ -6,6 +6,7 @@ import com.example.hsexercise.common.di.DaggerAppComponent
 import com.example.hsexercise.common.di.modules.ApplicationModule
 
 class App: Application() {
+
     val appComponent: AppComponent by lazy {
         DaggerAppComponent.builder()
             .applicationModule(ApplicationModule(applicationContext))

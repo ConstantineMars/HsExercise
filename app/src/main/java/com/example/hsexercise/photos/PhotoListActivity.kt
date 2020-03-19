@@ -1,6 +1,9 @@
 package com.example.hsexercise.photos
 
+import android.content.BroadcastReceiver
 import android.content.Context
+import android.content.Intent
+import android.content.IntentFilter
 import android.net.ConnectivityManager
 import android.os.Bundle
 import android.view.Menu
@@ -8,9 +11,9 @@ import android.view.MenuInflater
 import android.view.MenuItem
 import androidx.core.view.isVisible
 import androidx.lifecycle.Observer
+import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
-import androidx.swiperefreshlayout.widget.CircularProgressDrawable
 import com.example.hsexercise.App
 import com.example.hsexercise.R
 import com.example.hsexercise.common.BaseActivity
@@ -21,6 +24,7 @@ import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.activity_photos.*
 import kotlinx.android.synthetic.main.empty.*
 import kotlinx.android.synthetic.main.error.*
+import kotlinx.android.synthetic.main.loading.*
 import kotlinx.android.synthetic.main.offline.*
 import timber.log.Timber
 import javax.inject.Inject
@@ -29,6 +33,8 @@ import javax.inject.Inject
 class PhotoListActivity : BaseActivity<PhotoViewModel>() {
     override val viewModelClass = PhotoViewModel::class.java
     override val layoutResId = R.layout.activity_photos
+    val CONNECTIVITY_CHANGE_ACTION = "android.net.conn.CONNECTIVITY_CHANGE"
+
     private val compositeDisposable = CompositeDisposable()
     @Inject
     lateinit var photoService: PhotoService
@@ -42,12 +48,41 @@ class PhotoListActivity : BaseActivity<PhotoViewModel>() {
         supportActionBar?.setDisplayShowHomeEnabled(true)
         supportActionBar?.setIcon(R.drawable.ic_launcher_foreground)
 
+        val adapter = PhotoListAdapter(this)
+        viewModel.photos.observe(this, Observer { words ->
+            words?.let {
+                adapter.setPhotos(it)
+
+                if(it.isEmpty()) {
+                    if(!isOnline()) {
+                        showOffline()
+                    } else {
+                        showEmpty()
+                    }
+                } else {
+                    showContent()
+                }
+            }
+        })
+
+        recyclerView.adapter = adapter
+        recyclerView.layoutManager = StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL)
+
+        val intentFilter = IntentFilter()
+        intentFilter.addAction(CONNECTIVITY_CHANGE_ACTION)
+        registerReceiver(receiver, intentFilter)
+
+        loadPhotosFromNetwork()
+    }
+
+    protected fun loadPhotosFromNetwork() {
         if(!isOnline()) {
             showOffline()
             return
         }
 
-//        TODO: Move to repository, check if DB already has data
+        showLoading()
+        //        TODO: Move to repository, check if DB already has data
         compositeDisposable.add(photoService.listRepos()
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
@@ -61,25 +96,10 @@ class PhotoListActivity : BaseActivity<PhotoViewModel>() {
                 }
             )
         )
-
-        val adapter = PhotoListAdapter(this)
-        viewModel.photos.observe(this, Observer { words ->
-            words?.let {
-                adapter.setPhotos(it)
-
-                if(it.isEmpty()) {
-                    showEmpty()
-                } else {
-                    showContent()
-                }
-            }
-        })
-
-        recyclerView.adapter = adapter
-        recyclerView.layoutManager = StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL)
     }
 
     override fun onDestroy() {
+        unregisterReceiver(receiver)
         compositeDisposable.dispose()
         super.onDestroy()
     }
@@ -134,6 +154,7 @@ class PhotoListActivity : BaseActivity<PhotoViewModel>() {
         recyclerView.isVisible = false
         errorView.isVisible = false
         offlineView.isVisible = false
+        loadingView.isVisible = false
     }
 
     private fun showContent() {
@@ -141,6 +162,7 @@ class PhotoListActivity : BaseActivity<PhotoViewModel>() {
         emptyView.isVisible = false
         errorView.isVisible = false
         offlineView.isVisible = false
+        loadingView.isVisible = false
     }
 
     private fun showError() {
@@ -148,10 +170,20 @@ class PhotoListActivity : BaseActivity<PhotoViewModel>() {
         emptyView.isVisible = false
         recyclerView.isVisible = false
         offlineView.isVisible = false
+        loadingView.isVisible = false
     }
 
     private fun showOffline() {
         offlineView.isVisible = true
+        errorView.isVisible = false
+        emptyView.isVisible = false
+        recyclerView.isVisible = false
+        loadingView.isVisible = false
+    }
+
+    private fun showLoading() {
+        loadingView.isVisible = true
+        offlineView.isVisible = false
         errorView.isVisible = false
         emptyView.isVisible = false
         recyclerView.isVisible = false
@@ -162,5 +194,14 @@ class PhotoListActivity : BaseActivity<PhotoViewModel>() {
             getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
         val activeNetworkInfo = connectivityManager.activeNetworkInfo
         return activeNetworkInfo != null && activeNetworkInfo.isConnected
+    }
+
+    private val receiver = object : BroadcastReceiver() {
+
+        override fun onReceive(context: Context, intent: Intent) {
+            if (CONNECTIVITY_CHANGE_ACTION == intent.action) {
+                loadPhotosFromNetwork()
+            }
+        }
     }
 }
