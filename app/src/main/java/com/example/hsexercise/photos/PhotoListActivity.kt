@@ -38,6 +38,9 @@ class PhotoListActivity : BaseActivity<PhotoViewModel>() {
     }
 
     override fun onViewLoad(savedInstanceState: Bundle?) {
+        supportActionBar?.setDisplayShowHomeEnabled(true)
+        supportActionBar?.setIcon(R.drawable.ic_launcher_foreground)
+
         if(!isOnline()) {
             showOffline()
             return
