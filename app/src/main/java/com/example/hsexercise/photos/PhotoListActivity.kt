@@ -14,7 +14,7 @@ import io.reactivex.schedulers.Schedulers
 import timber.log.Timber
 import javax.inject.Inject
 
-class FeatureActivity : BaseActivity<FeatureViewModel>() {
+class PhotoListActivity : BaseActivity<FeatureViewModel>() {
     override val viewModelClass = FeatureViewModel::class.java
     override val layoutResId = R.layout.activity_feature
     private val compositeDisposable = CompositeDisposable()
@@ -27,7 +27,6 @@ class FeatureActivity : BaseActivity<FeatureViewModel>() {
     }
 
     override fun onViewLoad(savedInstanceState: Bundle?) {
-        // todo: write code here
         compositeDisposable.add(photoService.listRepos()
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
