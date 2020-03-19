@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.Menu
 import android.view.MenuInflater
 import android.view.MenuItem
+import androidx.core.view.isVisible
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -16,6 +17,7 @@ import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.activity_feature.*
+import kotlinx.android.synthetic.main.empty.*
 import timber.log.Timber
 import javax.inject.Inject
 
@@ -45,13 +47,17 @@ class PhotoListActivity : BaseActivity<PhotoViewModel>() {
         viewModel.photos.observe(this, Observer { words ->
             words?.let {
                 Timber.d( "count: %d", it.size)
-                adapter.setPhotos(it)
+
+                if(it.isEmpty()) {
+                    showEmpty()
+                } else {
+                    adapter.setPhotos(it)
+                }
             }
         })
 
         recyclerView.adapter = adapter
         recyclerView.layoutManager = StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL)
-//        recyclerView.layoutManager = LinearLayoutManager(this)
     }
 
     override fun onDestroy() {
@@ -102,5 +108,15 @@ class PhotoListActivity : BaseActivity<PhotoViewModel>() {
 
     private fun switchToGrid() {
         recyclerView.layoutManager = StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL)
+    }
+
+    private fun showEmpty() {
+        recyclerView.isVisible = false
+        empty.isVisible = true
+    }
+
+    private fun hideEmpty() {
+        recyclerView.isVisible = true
+        empty.isVisible = false
     }
 }
