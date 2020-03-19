@@ -1,5 +1,7 @@
 package com.example.hsexercise.photos
 
+import android.content.Context
+import android.net.ConnectivityManager
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuInflater
@@ -8,8 +10,8 @@ import androidx.core.view.isVisible
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
-import com.example.hsexercise.R
 import com.example.hsexercise.App
+import com.example.hsexercise.R
 import com.example.hsexercise.common.BaseActivity
 import com.example.hsexercise.photos.network.PhotoService
 import io.reactivex.android.schedulers.AndroidSchedulers
@@ -18,8 +20,10 @@ import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.activity_photos.*
 import kotlinx.android.synthetic.main.empty.*
 import kotlinx.android.synthetic.main.error.*
+import kotlinx.android.synthetic.main.offline.*
 import timber.log.Timber
 import javax.inject.Inject
+
 
 class PhotoListActivity : BaseActivity<PhotoViewModel>() {
     override val viewModelClass = PhotoViewModel::class.java
@@ -34,6 +38,11 @@ class PhotoListActivity : BaseActivity<PhotoViewModel>() {
     }
 
     override fun onViewLoad(savedInstanceState: Bundle?) {
+        if(!isOnline()) {
+            showOffline()
+            return
+        }
+
         compositeDisposable.add(photoService.listRepos()
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
@@ -119,17 +128,34 @@ class PhotoListActivity : BaseActivity<PhotoViewModel>() {
         emptyView.isVisible = true
         recyclerView.isVisible = false
         errorView.isVisible = false
+        offlineView.isVisible = false
     }
 
     private fun showContent() {
         recyclerView.isVisible = true
         emptyView.isVisible = false
         errorView.isVisible = false
+        offlineView.isVisible = false
     }
 
     private fun showError() {
         errorView.isVisible = true
         emptyView.isVisible = false
         recyclerView.isVisible = false
+        offlineView.isVisible = false
+    }
+
+    private fun showOffline() {
+        offlineView.isVisible = true
+        errorView.isVisible = false
+        emptyView.isVisible = false
+        recyclerView.isVisible = false
+    }
+
+    private fun isOnline(): Boolean {
+        val connectivityManager =
+            getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+        val activeNetworkInfo = connectivityManager.activeNetworkInfo
+        return activeNetworkInfo != null && activeNetworkInfo.isConnected
     }
 }
