@@ -2,6 +2,8 @@ package com.example.hsexercise.photos
 
 import android.os.Bundle
 import androidx.lifecycle.Observer
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.example.hsexercise.R
 import com.example.hsexercise.App
 import com.example.hsexercise.common.BaseActivity
@@ -35,12 +37,17 @@ class FeatureActivity : BaseActivity<FeatureViewModel>() {
             )
         )
 
+        val adapter = PhotoListAdapter(this)
         viewModel.photos.observe(this, Observer { words ->
             words?.let {
                 Timber.d( "count: %d", it.size)
-//                adapter.setWords(it)
+                adapter.setPhotos(it)
             }
         })
+
+        val recyclerView = findViewById<RecyclerView>(R.id.recyclerview)
+        recyclerView.adapter = adapter
+        recyclerView.layoutManager = LinearLayoutManager(this)
     }
 
     override fun onDestroy() {
