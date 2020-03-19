@@ -10,6 +10,7 @@ import androidx.core.view.isVisible
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
+import androidx.swiperefreshlayout.widget.CircularProgressDrawable
 import com.example.hsexercise.App
 import com.example.hsexercise.R
 import com.example.hsexercise.common.BaseActivity
@@ -46,6 +47,7 @@ class PhotoListActivity : BaseActivity<PhotoViewModel>() {
             return
         }
 
+//        TODO: Move to repository, check if DB already has data
         compositeDisposable.add(photoService.listRepos()
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
