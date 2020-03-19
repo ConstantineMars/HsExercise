@@ -46,12 +46,12 @@ class PhotoListActivity : BaseActivity<PhotoViewModel>() {
         val adapter = PhotoListAdapter(this)
         viewModel.photos.observe(this, Observer { words ->
             words?.let {
-                Timber.d( "count: %d", it.size)
+                adapter.setPhotos(it)
 
                 if(it.isEmpty()) {
                     showEmpty()
                 } else {
-                    adapter.setPhotos(it)
+                    hideEmpty()
                 }
             }
         })
