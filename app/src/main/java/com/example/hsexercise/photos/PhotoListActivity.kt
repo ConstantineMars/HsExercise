@@ -59,20 +59,37 @@ class PhotoListActivity : BaseActivity<PhotoViewModel>() {
         super.onDestroy()
     }
 
+    var menu: Menu? = null
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        this.menu = menu
         val inflater: MenuInflater = menuInflater
         inflater.inflate(R.menu.main_menu, menu)
         return true
+    }
+
+    private fun updateMenu() {
+        val isInListLayout = recyclerView.layoutManager is LinearLayoutManager
+
+        menu?.findItem(R.id.list)?.isVisible = !isInListLayout
+        menu?.findItem(R.id.grid)?.isVisible = isInListLayout
+    }
+
+    override fun onPrepareOptionsMenu(menu: Menu?): Boolean {
+        updateMenu()
+
+        return super.onPrepareOptionsMenu(menu)
     }
 
     override fun onOptionsItemSelected(item: MenuItem?): Boolean {
         return when (item?.itemId) {
             R.id.list -> {
                 switchToList()
+                updateMenu()
                 true
             }
             R.id.grid -> {
                 switchToGrid()
+                updateMenu()
                 true
             }
             else -> super.onOptionsItemSelected(item)
