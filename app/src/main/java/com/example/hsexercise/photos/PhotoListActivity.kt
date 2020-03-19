@@ -31,9 +31,7 @@ class PhotoListActivity : BaseActivity<PhotoViewModel>() {
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe (
-                { photos -> viewModel.insertAll(photos)
-                    //Timber.d("photos size = %d", photos.size)
-                },
+                { photos -> viewModel.insertAll(photos) },
                 { error -> Timber.e(error) }
             )
         )
@@ -48,7 +46,7 @@ class PhotoListActivity : BaseActivity<PhotoViewModel>() {
 
         val recyclerView = findViewById<RecyclerView>(R.id.recyclerview)
         recyclerView.adapter = adapter
-        recyclerView.layoutManager = StaggeredGridLayoutManager(3, StaggeredGridLayoutManager.VERTICAL)
+        recyclerView.layoutManager = StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL)
 //        recyclerView.layoutManager = LinearLayoutManager(this)
     }
 
