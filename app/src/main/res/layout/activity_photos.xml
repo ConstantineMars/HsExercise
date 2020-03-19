@@ -21,4 +21,6 @@
 
     <include layout="@layout/offline" />
 
+    <include layout="@layout/loading" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>
