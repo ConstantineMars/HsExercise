@@ -1,6 +1,5 @@
 package com.example.hsexercise.photos.repository
 
-import androidx.annotation.WorkerThread
 import androidx.lifecycle.LiveData
 import com.example.hsexercise.photos.database.PhotoDao
 import com.example.hsexercise.photos.model.Photo

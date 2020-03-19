@@ -20,11 +20,10 @@ class PhotoDatabaseCallback: RoomDatabase.Callback() {
     }
 
     suspend fun populateDatabase(photoDao: PhotoDao) {
-        // Delete all content here.
         photoDao.deleteAll()
 
-        photoDao.insert(Photo("1", "bob", "url1", "url1", 10, 10))
-        photoDao.insert(Photo("2", "mike", "url2", "url2", 10, 10))
-        photoDao.insert(Photo("3", "frank", "url3", "url3", 10, 10))
+//        photoDao.insert(Photo("1", "bob", "url1", "url1", 10, 10))
+//        photoDao.insert(Photo("2", "mike", "url2", "url2", 10, 10))
+//        photoDao.insert(Photo("3", "frank", "url3", "url3", 10, 10))
     }
 }
