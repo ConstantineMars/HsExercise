@@ -1,4 +1,4 @@
-package com.example.hsexercise.common
+package com.example.hsexercise.common.di.modules
 
 import com.example.hsexercise.BuildConfig
 import com.google.gson.FieldNamingPolicy
@@ -16,19 +16,22 @@ import retrofit2.Retrofit
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
 import retrofit2.converter.gson.GsonConverterFactory
 import java.util.concurrent.TimeUnit
+import javax.inject.Singleton
 import javax.net.ssl.HostnameVerifier
 
 @Module
 object NetworkModule {
-    @Provides
+    @Provides @Singleton
     fun provideRestClient() : RestClient =
-        RestClient(RestClientConfig(
+        RestClient(
+            RestClientConfig(
             provideGsonConverterFactory(),
-            provideRxJava2CallAdapterFactory()).apply {
+            provideRxJava2CallAdapterFactory()
+        ).apply {
             addInterceptor(provideHttpLoggingInterceptor())
         })
 
-    @Provides
+    @Provides @Singleton
     fun providesRetrofit(restClient: RestClient): Retrofit = restClient.createRetrofitAdapter()
 
     private fun provideGson(): Gson = GsonBuilder()
@@ -83,7 +86,8 @@ data class RestClientConfig(
     val callAdapterFactory: CallAdapter.Factory,
     val readTimeOutValue: Long = API_TIME_OUT,
     val writeTimeOutValue: Long = API_TIME_OUT,
-    val connectTimeOutValue: Long = API_TIME_OUT) {
+    val connectTimeOutValue: Long = API_TIME_OUT
+) {
     private var interceptors: MutableList<Interceptor> = mutableListOf()
 
     fun addInterceptor(interceptor: Interceptor) = interceptors.add(interceptor)
