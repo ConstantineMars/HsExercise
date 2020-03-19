@@ -1,6 +1,6 @@
-package com.example.hsexercise.feature.network
+package com.example.hsexercise.photos.network
 
-import com.example.hsexercise.feature.model.Photo
+import com.example.hsexercise.photos.model.Photo
 import io.reactivex.Flowable
 import retrofit2.http.GET
 

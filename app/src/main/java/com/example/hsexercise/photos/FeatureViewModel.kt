@@ -1,4 +1,4 @@
-package com.example.hsexercise.feature
+package com.example.hsexercise.photos
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider

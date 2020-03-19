@@ -1,10 +1,10 @@
-package com.example.hsexercise.feature
+package com.example.hsexercise.photos
 
 import android.os.Bundle
 import com.example.hsexercise.R
 import com.example.hsexercise.App
 import com.example.hsexercise.common.BaseActivity
-import com.example.hsexercise.feature.network.PhotoService
+import com.example.hsexercise.photos.network.PhotoService
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
