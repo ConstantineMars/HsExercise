@@ -8,7 +8,7 @@ import kotlinx.coroutines.withContext
 
 /**
  * Common Repository pattern
- * TODO: Actually, this should include work with both network and db data sources - postopned as not critical task
+ * TODO: Actually, this should include work with both network and db data sources - postponed as not critical task
  */
 
 class PhotoRepository(private val photoDao: PhotoDao) {
