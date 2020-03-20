@@ -1,4 +1,4 @@
-package com.example.hsexercise.photos.network
+package com.example.hsexercise.photos.api
 
 import com.example.hsexercise.photos.model.Photo
 import io.reactivex.Flowable

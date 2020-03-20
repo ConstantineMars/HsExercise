@@ -1,4 +1,4 @@
-package com.example.hsexercise.photos
+package com.example.hsexercise.photos.ui
 
 import android.content.Context
 import android.view.LayoutInflater

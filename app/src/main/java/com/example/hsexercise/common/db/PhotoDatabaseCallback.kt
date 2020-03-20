@@ -1,10 +1,8 @@
-package com.example.hsexercise.common.database
+package com.example.hsexercise.common.db
 
 import androidx.room.RoomDatabase
 import androidx.sqlite.db.SupportSQLiteDatabase
-import com.example.hsexercise.photos.database.PhotoDao
-import com.example.hsexercise.photos.model.Photo
-import kotlinx.coroutines.CoroutineScope
+import com.example.hsexercise.photos.db.PhotoDao
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 

@@ -1,7 +1,7 @@
-package com.example.hsexercise.photos.repository
+package com.example.hsexercise.photos.data
 
 import androidx.lifecycle.LiveData
-import com.example.hsexercise.photos.database.PhotoDao
+import com.example.hsexercise.photos.db.PhotoDao
 import com.example.hsexercise.photos.model.Photo
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext

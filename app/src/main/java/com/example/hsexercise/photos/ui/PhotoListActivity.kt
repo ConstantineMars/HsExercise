@@ -1,10 +1,9 @@
-package com.example.hsexercise.photos
+package com.example.hsexercise.photos.ui
 
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
-import android.net.ConnectivityManager
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuInflater
@@ -16,8 +15,8 @@ import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.example.hsexercise.App
 import com.example.hsexercise.R
 import com.example.hsexercise.common.BaseActivity
-import com.example.hsexercise.common.network.NetworkUtil.isOnline
-import com.example.hsexercise.photos.network.PhotoService
+import com.example.hsexercise.common.api.NetworkUtil.isOnline
+import com.example.hsexercise.photos.api.PhotoService
 import com.example.hsexercise.photos.state.StateData.State.*
 import com.example.hsexercise.photos.viewmodel.PhotoViewModel
 import kotlinx.android.synthetic.main.activity_photos.*

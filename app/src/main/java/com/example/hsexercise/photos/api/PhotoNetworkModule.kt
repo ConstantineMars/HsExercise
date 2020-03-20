@@ -1,4 +1,4 @@
-package com.example.hsexercise.photos.network
+package com.example.hsexercise.photos.api
 
 import dagger.Module
 import dagger.Provides

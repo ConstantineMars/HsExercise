@@ -1,11 +1,10 @@
 package com.example.hsexercise.common.di
 
-import com.example.hsexercise.common.BaseActivity
 import com.example.hsexercise.common.di.modules.ApplicationModule
 import com.example.hsexercise.common.di.modules.DatabaseModule
 import com.example.hsexercise.common.di.modules.NetworkModule
-import com.example.hsexercise.photos.PhotoListActivity
-import com.example.hsexercise.photos.network.PhotoNetworkModule
+import com.example.hsexercise.photos.ui.PhotoListActivity
+import com.example.hsexercise.photos.api.PhotoNetworkModule
 import dagger.Component
 import javax.inject.Singleton
 

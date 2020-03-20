@@ -1,4 +1,4 @@
-package com.example.hsexercise.common.network
+package com.example.hsexercise.common.api
 
 import android.content.Context
 import android.net.ConnectivityManager

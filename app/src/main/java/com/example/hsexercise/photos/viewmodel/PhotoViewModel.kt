@@ -5,10 +5,10 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
 import androidx.lifecycle.viewModelScope
-import com.example.hsexercise.common.database.PhotoDatabase
+import com.example.hsexercise.common.db.PhotoDatabase
 import com.example.hsexercise.photos.model.Photo
-import com.example.hsexercise.photos.network.PhotoService
-import com.example.hsexercise.photos.repository.PhotoRepository
+import com.example.hsexercise.photos.api.PhotoService
+import com.example.hsexercise.photos.data.PhotoRepository
 import com.example.hsexercise.photos.state.StateData
 import com.example.hsexercise.photos.state.StateData.State.*
 import io.reactivex.android.schedulers.AndroidSchedulers

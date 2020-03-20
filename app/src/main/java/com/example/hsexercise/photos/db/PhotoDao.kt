@@ -1,9 +1,8 @@
-package com.example.hsexercise.photos.database
+package com.example.hsexercise.photos.db
 
 import androidx.lifecycle.LiveData
 import androidx.room.*
 import com.example.hsexercise.photos.model.Photo
-import io.reactivex.Maybe
 
 @Dao
 interface PhotoDao {

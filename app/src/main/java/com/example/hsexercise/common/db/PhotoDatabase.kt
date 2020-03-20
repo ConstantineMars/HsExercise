@@ -1,13 +1,12 @@
-package com.example.hsexercise.common.database
+package com.example.hsexercise.common.db
 
 import android.content.Context
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
-import com.example.hsexercise.common.database.PhotoDatabase.Companion.DATABASE_VERSION
-import com.example.hsexercise.photos.database.PhotoDao
+import com.example.hsexercise.common.db.PhotoDatabase.Companion.DATABASE_VERSION
+import com.example.hsexercise.photos.db.PhotoDao
 import com.example.hsexercise.photos.model.Photo
-import kotlinx.coroutines.CoroutineScope
 
 @Database(entities = [Photo::class], version = DATABASE_VERSION)
 abstract class PhotoDatabase : RoomDatabase() {

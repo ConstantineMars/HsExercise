@@ -2,7 +2,7 @@ package com.example.hsexercise.common.di.modules
 
 import android.content.Context
 import androidx.room.Room
-import com.example.hsexercise.common.database.PhotoDatabase
+import com.example.hsexercise.common.db.PhotoDatabase
 import dagger.Module
 import dagger.Provides
 import javax.inject.Singleton
