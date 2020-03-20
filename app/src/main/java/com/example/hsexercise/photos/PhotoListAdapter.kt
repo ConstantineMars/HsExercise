@@ -8,8 +8,13 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.CircularProgressDrawable
 import com.bumptech.glide.Glide
 import com.example.hsexercise.R
+import com.example.hsexercise.common.network.NetworkUtil
 import com.example.hsexercise.photos.model.Photo
 import kotlinx.android.synthetic.main.photo_item.view.*
+
+/**
+ * Adapter for recycler view
+ */
 
 class PhotoListAdapter internal constructor(
     private val context: Context
@@ -42,6 +47,7 @@ class PhotoListAdapter internal constructor(
         Glide.with(context)
             .load(current.download_url)
             .placeholder(circularProgressDrawable)
+            .error(R.drawable.ic_photo_grey_48dp)
             .centerCrop()
             .into(holder.imageView);
     }
