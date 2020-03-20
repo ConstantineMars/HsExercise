@@ -3,6 +3,8 @@ Headspace Android Coding Exercise
 
 **Android Developer Code Challenge**
 
+
+
 The goal of this problem is to create an Android app that displays a list of photos from the picsum API ([https://picsum.photos/](https://picsum.photos/))
 
 The endpoint you need to call is [https://picsum.photos/v2/list](https://picsum.photos/v2/list)
