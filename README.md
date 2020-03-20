@@ -3,7 +3,7 @@ Headspace Android Coding Exercise
 
 **Android Developer Code Challenge**
 
-
+[![Demo video](https://github.com/ConstantineMars/HsExercise/blob/master/files/Screen%20Shot%202020-03-19%20at%2011.24.08%20PM.png)](https://github.com/ConstantineMars/HsExercise/blob/master/files/Demo.mov)
 
 The goal of this problem is to create an Android app that displays a list of photos from the picsum API ([https://picsum.photos/](https://picsum.photos/))
 
