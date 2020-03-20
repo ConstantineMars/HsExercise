@@ -8,12 +8,14 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.CircularProgressDrawable
 import com.bumptech.glide.Glide
 import com.example.hsexercise.R
-import com.example.hsexercise.common.network.NetworkUtil
 import com.example.hsexercise.photos.model.Photo
 import kotlinx.android.synthetic.main.photo_item.view.*
 
 /**
  * Adapter for recycler view
+ * Showing author, dimensions and image
+ * Show circular progress drawable while loading image
+ * In case if image loading fails - display placeholder image
  */
 
 class PhotoListAdapter internal constructor(

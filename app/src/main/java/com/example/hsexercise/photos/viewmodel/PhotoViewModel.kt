@@ -1,4 +1,4 @@
-package com.example.hsexercise.photos
+package com.example.hsexercise.photos.viewmodel
 
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
