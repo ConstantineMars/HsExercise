@@ -28,7 +28,15 @@ class PhotoViewModel(application: Application) : AndroidViewModel(application) {
     init {
         val photoDao = PhotoDatabase.getDatabase(application).photoDao()
         repository = PhotoRepository(photoDao)
-        repository.photos.observeForever(Observer { photos -> isCacheEmpty = photos.isNullOrEmpty() })
+
+//        Database is the single source of truth - so we send success state only after new data cached in database
+        repository.photos.observeForever(Observer {
+                photos ->
+            isCacheEmpty = photos.isNullOrEmpty()
+            if(!isCacheEmpty) {
+                stateData.postValue(StateData(photos, SUCCESS))
+            }
+        })
 
         stateData.postValue(StateData(state = LOADING))
     }
@@ -44,13 +52,8 @@ class PhotoViewModel(application: Application) : AndroidViewModel(application) {
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe (
-                { photos ->
-                    stateData.postValue(StateData(photos, SUCCESS))
-                    viewModelScope.launch { repository.insertAll(photos) }
-                },
-                { error ->
-                    stateData.postValue(StateData(state = ERROR, error = error))
-                }
+                { photos -> viewModelScope.launch { repository.insertAll(photos) } },
+                { error -> stateData.postValue(StateData(state = ERROR, error = error)) }
             )
         )
     }
