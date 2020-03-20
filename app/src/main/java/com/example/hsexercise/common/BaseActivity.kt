@@ -4,6 +4,7 @@ import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
+import com.example.hsexercise.App
 
 abstract class BaseActivity<VM : ViewModel> : AppCompatActivity() {
     protected abstract val viewModelClass: Class<VM>

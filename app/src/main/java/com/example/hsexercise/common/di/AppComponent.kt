@@ -1,5 +1,6 @@
 package com.example.hsexercise.common.di
 
+import com.example.hsexercise.common.BaseActivity
 import com.example.hsexercise.common.di.modules.ApplicationModule
 import com.example.hsexercise.common.di.modules.DatabaseModule
 import com.example.hsexercise.common.di.modules.NetworkModule
@@ -11,5 +12,5 @@ import javax.inject.Singleton
 @Singleton
 @Component(modules = [ApplicationModule::class, DatabaseModule::class, PhotoNetworkModule::class, NetworkModule::class])
 interface AppComponent {
-    fun injectFeatureActivity(activity: PhotoListActivity)
+    fun injectPhotoListActivity(activity: PhotoListActivity)
 }
