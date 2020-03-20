@@ -3,6 +3,7 @@ package com.example.hsexercise.photos
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.Observer
 import androidx.lifecycle.viewModelScope
 import com.example.hsexercise.common.database.PhotoDatabase
 import com.example.hsexercise.photos.model.Photo
@@ -22,15 +23,23 @@ class PhotoViewModel(application: Application) : AndroidViewModel(application) {
 
     private val repository: PhotoRepository
     val stateData = MutableLiveData<StateData<List<Photo>>>()
+    var isCacheEmpty: Boolean = true
 
     init {
         val photoDao = PhotoDatabase.getDatabase(application).photoDao()
         repository = PhotoRepository(photoDao)
+        repository.photos.observeForever(Observer { photos -> isCacheEmpty = photos.isNullOrEmpty() })
 
         stateData.postValue(StateData(state = LOADING))
     }
 
     fun load() {
+        val cachedPhotos = repository.photos.value
+        if(!cachedPhotos.isNullOrEmpty()) {
+            stateData.postValue(StateData(cachedPhotos, SUCCESS))
+            return
+        }
+
         compositeDisposable.add(photoService.listRepos()
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())

@@ -79,7 +79,7 @@ class PhotoListActivity : BaseActivity<PhotoViewModel>() {
     }
 
     protected fun load() {
-        if(!isOnline()) {
+        if(viewModel.isCacheEmpty && !isOnline()) {
             showOffline()
             return
         }
