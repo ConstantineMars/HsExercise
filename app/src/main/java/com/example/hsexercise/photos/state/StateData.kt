@@ -9,6 +9,6 @@ class StateData<T>(val data: T? = null, val state: State, val error: Throwable? 
     enum class State {
         LOADING,
         ERROR,
-        SUCCESS
+        DONE
     }
 }

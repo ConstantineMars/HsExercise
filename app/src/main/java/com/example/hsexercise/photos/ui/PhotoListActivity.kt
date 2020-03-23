@@ -8,6 +8,7 @@ import android.os.Bundle
 import android.view.Menu
 import android.view.MenuInflater
 import android.view.MenuItem
+import android.view.View
 import androidx.core.view.isVisible
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -17,11 +18,13 @@ import com.example.hsexercise.R
 import com.example.hsexercise.common.BaseActivity
 import com.example.hsexercise.common.api.NetworkUtil.isOnline
 import com.example.hsexercise.photos.api.PhotoService
+import com.example.hsexercise.photos.state.StateData
 import com.example.hsexercise.photos.state.StateData.State.*
 import com.example.hsexercise.photos.viewmodel.PhotoViewModel
 import kotlinx.android.synthetic.main.activity_photos.*
 import kotlinx.android.synthetic.main.empty.*
 import kotlinx.android.synthetic.main.error.*
+import kotlinx.android.synthetic.main.footer_item.*
 import kotlinx.android.synthetic.main.loading.*
 import kotlinx.android.synthetic.main.offline.*
 import javax.inject.Inject
@@ -51,6 +54,7 @@ class PhotoListActivity : BaseActivity<PhotoViewModel>() {
         initRecyclerView()
         initViewModel()
         initReceiver()
+        initState()
         load()
     }
 
@@ -60,7 +64,7 @@ class PhotoListActivity : BaseActivity<PhotoViewModel>() {
     }
 
     private fun initRecyclerView() {
-        adapter = PhotoListAdapter(this)
+        adapter = PhotoListAdapter(this) {viewModel.retry()}
 
         recyclerView.adapter = adapter
         recyclerView.layoutManager = StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL)
@@ -69,32 +73,39 @@ class PhotoListActivity : BaseActivity<PhotoViewModel>() {
 
     private fun initViewModel() {
         viewModel.photoService = photoService
-        viewModel.stateData.observe(this, Observer { stateData ->
-            stateData?.let {
-                if(stateData.data != null) {
-                    adapter.setPhotos(stateData.data)
-                }
+        viewModel.loadFactory()
 
-//                We use StateData.State enum for transferring state with LiveData (success/loading/error)
-                when(stateData.state) {
-                    SUCCESS ->
-                        if(stateData.data!!.isEmpty()) {
-
-//                          Empty data when offline may mean that data were not downloaded yet - so we show "offline" screen
-                            if(!isOnline(applicationContext)) {
-                                showOffline()
-                            } else {
-                                showEmpty()
-                            }
-                        } else {
-                            showContent()
-                        }
-                    ERROR -> showError()
-                    LOADING -> showLoading()
-                }
-
-            }
+        viewModel.photosList.observe(this, Observer {
+            adapter.submitList(it)
         })
+
+//        viewModel.loadFactory()
+//        viewModel.stateData.observe(this, Observer { stateData ->
+//            stateData?.let {
+//                if(stateData.data != null) {
+//                    adapter.setPhotos(stateData.data)
+//                }
+//
+////                We use StateData.State enum for transferring state with LiveData (success/loading/error)
+//                when(stateData.state) {
+//                    DONE ->
+//                        if(stateData.data!!.isEmpty()) {
+//
+////                          Empty data when offline may mean that data were not downloaded yet - so we show "offline" screen
+//                            if(!isOnline(applicationContext)) {
+//                                showOffline()
+//                            } else {
+//                                showEmpty()
+//                            }
+//                        } else {
+//                            showContent()
+//                        }
+//                    ERROR -> showError()
+//                    LOADING -> showLoading()
+//                }
+//
+//            }
+//        })
     }
 
     private fun initReceiver() {
@@ -103,14 +114,26 @@ class PhotoListActivity : BaseActivity<PhotoViewModel>() {
         registerReceiver(receiver, intentFilter)
     }
 
+    private fun initState() {
+//        txt_error.setOnClickListener { viewModel.retry() }
+        viewModel.getState().observe(this, Observer { state ->
+//            progress_bar.visibility = if (viewModel.listIsEmpty() && state == StateData.State.LOADING) View.VISIBLE else View.GONE
+//            txt_error.visibility = if (viewModel.listIsEmpty() && state == StateData.State.ERROR) View.VISIBLE else View.GONE
+            if (!viewModel.listIsEmpty()) {
+                adapter.setState(state ?: StateData.State.DONE)
+            }
+        })
+    }
+
     protected fun load() {
         if(viewModel.isCacheEmpty && !isOnline(applicationContext)) {
             showOffline()
             return
         }
 
-        showLoading()
-        viewModel.load()
+//        showLoading()
+//        viewModel.load()
+//        viewModel.loadFactory()
     }
 
     override fun onDestroy() {
