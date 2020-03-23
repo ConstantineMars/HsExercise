@@ -58,7 +58,7 @@ class PhotoListAdapter internal constructor(
         }
     }
 
-    inner class FooterViewHolder(retry: () -> Unit, view: ViewGroup) : RecyclerView.ViewHolder(view) {
+    inner class FooterViewHolder(retry: () -> Unit, view: View) : RecyclerView.ViewHolder(view) {
 
         init {
             view.txt_error.setOnClickListener { retry() }
@@ -76,13 +76,13 @@ class PhotoListAdapter internal constructor(
             return PhotoViewHolder(itemView)
         } else {
             val itemView = inflater.inflate(R.layout.footer_item, parent, false)
-            return FooterViewHolder(retry, parent)
+            return FooterViewHolder(retry, itemView)
         }
     }
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         when (getItemViewType(position)) {
-            DATA_VIEW_TYPE -> (holder as PhotoViewHolder).bind(photos[position])
+            DATA_VIEW_TYPE -> getItem(position)?.let { (holder as PhotoViewHolder).bind(it) }
             else -> (holder as FooterViewHolder).bind(state)
         }
     }
@@ -92,7 +92,11 @@ class PhotoListAdapter internal constructor(
         notifyDataSetChanged()
     }
 
-    override fun getItemCount() = super.getItemCount() + if (hasFooter()) 1 else 0 // photos.size
+    override fun getItemCount(): Int
+    {
+        val count = super.getItemCount() + if (hasFooter()) 1 else 0
+        return count
+    } // photos.size
 
     override fun getItemViewType(position: Int): Int {
         return if (position < super.getItemCount()) DATA_VIEW_TYPE else FOOTER_VIEW_TYPE
