@@ -11,15 +11,17 @@ import androidx.swiperefreshlayout.widget.CircularProgressDrawable
 import com.bumptech.glide.Glide
 import com.example.hsexercise.R
 import com.example.hsexercise.photos.model.Photo
-import com.example.hsexercise.photos.state.StateData
+import com.example.hsexercise.photos.state.State
+import com.example.hsexercise.photos.state.State.ERROR
+import com.example.hsexercise.photos.state.State.LOADING
 import kotlinx.android.synthetic.main.footer_item.view.*
 import kotlinx.android.synthetic.main.photo_item.view.*
 
 /**
  * Adapter for recycler view
  * Showing author, dimensions and image
- * Show circular progress drawable while loading image
- * In case if image loading fails - display placeholder image
+ * Show circular progress drawable while launching image
+ * In case if image launching fails - display placeholder image
  */
 
 class PhotoListAdapter internal constructor(
@@ -27,7 +29,7 @@ class PhotoListAdapter internal constructor(
     private val retry: () -> Unit
 ) : PagedListAdapter<Photo, RecyclerView.ViewHolder>(PhotoDiffCallback) {
 
-    private var state = StateData.State.LOADING
+    private var state = LOADING
 
     private val DATA_VIEW_TYPE = 1
     private val FOOTER_VIEW_TYPE = 2
@@ -64,9 +66,9 @@ class PhotoListAdapter internal constructor(
             view.txt_error.setOnClickListener { retry() }
         }
 
-        fun bind(status: StateData.State?) {
-            itemView.progress_bar.visibility = if (status == StateData.State.LOADING) View.VISIBLE else View.INVISIBLE
-            itemView.txt_error.visibility = if (status == StateData.State.ERROR) View.VISIBLE else View.INVISIBLE
+        fun bind(status: State?) {
+            itemView.progress_bar.visibility = if (status == LOADING) View.VISIBLE else View.INVISIBLE
+            itemView.txt_error.visibility = if (status == ERROR) View.VISIBLE else View.INVISIBLE
         }
     }
 
@@ -92,21 +94,17 @@ class PhotoListAdapter internal constructor(
         notifyDataSetChanged()
     }
 
-    override fun getItemCount(): Int
-    {
-        val count = super.getItemCount() + if (hasFooter()) 1 else 0
-        return count
-    } // photos.size
+    override fun getItemCount() = super.getItemCount() + if (hasFooter()) 1 else 0
 
     override fun getItemViewType(position: Int): Int {
         return if (position < super.getItemCount()) DATA_VIEW_TYPE else FOOTER_VIEW_TYPE
     }
 
     private fun hasFooter(): Boolean {
-        return super.getItemCount() != 0 && (state == StateData.State.LOADING || state == StateData.State.ERROR)
+        return super.getItemCount() != 0 && (state == LOADING || state == ERROR)
     }
 
-    fun setState(state: StateData.State) {
+    fun setState(state: State) {
         this.state = state
         notifyItemChanged(super.getItemCount())
     }

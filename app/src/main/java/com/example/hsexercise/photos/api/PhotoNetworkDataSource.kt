@@ -3,8 +3,8 @@ package com.example.hsexercise.photos.api
 import androidx.lifecycle.MutableLiveData
 import androidx.paging.PageKeyedDataSource
 import com.example.hsexercise.photos.model.Photo
-import com.example.hsexercise.photos.state.StateData
-import com.example.hsexercise.photos.state.StateData.State.*
+import com.example.hsexercise.photos.state.State
+import com.example.hsexercise.photos.state.State.*
 import io.reactivex.Completable
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
@@ -15,7 +15,7 @@ class PhotoNetworkDataSource(private val networkService: PhotoService,
                              private val compositeDisposable: CompositeDisposable
 ):  PageKeyedDataSource<Int, Photo>() {
 
-    var state: MutableLiveData<StateData.State> = MutableLiveData()
+    var state: MutableLiveData<State> = MutableLiveData()
     private var retryCompletable: Completable? = null
 
     override fun loadInitial(
@@ -64,7 +64,7 @@ class PhotoNetworkDataSource(private val networkService: PhotoService,
 
     }
 
-    private fun updateState(state: StateData.State) {
+    fun updateState(state: State) {
         this.state.postValue(state)
     }
 

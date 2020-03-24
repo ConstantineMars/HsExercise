@@ -10,11 +10,11 @@ class PhotoDataSourceFactory (
     private val networkService: PhotoService)
     : DataSource.Factory<Int, Photo>() {
 
-    val newsDataSourceLiveData = MutableLiveData<PhotoNetworkDataSource>()
+    val photosDataSourceLiveData = MutableLiveData<PhotoNetworkDataSource>()
 
     override fun create(): DataSource<Int, Photo> {
         val newsDataSource = PhotoNetworkDataSource(networkService, compositeDisposable)
-        newsDataSourceLiveData.postValue(newsDataSource)
+        photosDataSourceLiveData.postValue(newsDataSource)
         return newsDataSource
     }
 }

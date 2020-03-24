@@ -8,7 +8,6 @@ import android.os.Bundle
 import android.view.Menu
 import android.view.MenuInflater
 import android.view.MenuItem
-import android.view.View
 import androidx.core.view.isVisible
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -16,15 +15,16 @@ import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.example.hsexercise.App
 import com.example.hsexercise.R
 import com.example.hsexercise.common.BaseActivity
+import com.example.hsexercise.common.api.NetworkUtil
 import com.example.hsexercise.common.api.NetworkUtil.isOnline
 import com.example.hsexercise.photos.api.PhotoService
-import com.example.hsexercise.photos.state.StateData
-import com.example.hsexercise.photos.state.StateData.State.*
+import com.example.hsexercise.photos.state.State
+import com.example.hsexercise.photos.state.State.*
 import com.example.hsexercise.photos.viewmodel.PhotoViewModel
 import kotlinx.android.synthetic.main.activity_photos.*
 import kotlinx.android.synthetic.main.empty.*
 import kotlinx.android.synthetic.main.error.*
-import kotlinx.android.synthetic.main.footer_item.*
+import kotlinx.android.synthetic.main.launching.*
 import kotlinx.android.synthetic.main.loading.*
 import kotlinx.android.synthetic.main.offline.*
 import javax.inject.Inject
@@ -38,11 +38,15 @@ import javax.inject.Inject
  */
 
 class PhotoListActivity : BaseActivity<PhotoViewModel>() {
-    private val CONNECTIVITY_CHANGE_ACTION = "android.net.conn.CONNECTIVITY_CHANGE"
+    companion object {
+        private const val CONNECTIVITY_CHANGE_ACTION = "android.net.conn.CONNECTIVITY_CHANGE"
+    }
+
     override val viewModelClass = PhotoViewModel::class.java
     override val layoutResId = R.layout.activity_photos
     private var menu: Menu? = null
     private lateinit var adapter: PhotoListAdapter
+    private var justLaunched = true
 
     @Inject
     lateinit var photoService: PhotoService
@@ -68,44 +72,44 @@ class PhotoListActivity : BaseActivity<PhotoViewModel>() {
 
         recyclerView.adapter = adapter
         recyclerView.layoutManager = StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL)
-
     }
 
     private fun initViewModel() {
         viewModel.photoService = photoService
-        viewModel.loadFactory()
+        load()
+        subscribeToViewModel()
+        subscribeToState()
+    }
 
+    private fun load() {
+        if(viewModel.isCacheEmpty && !isOnline(applicationContext)) {
+            showOffline()
+        }
+
+        viewModel.load()
+    }
+
+    private fun subscribeToState() {
+        viewModel.getState().observe(this, Observer {
+            if(it == null){
+                showEmpty()
+            }
+            when(it) {
+                LOADING -> showLoading()
+                ERROR -> if( NetworkUtil.isOnline(this)) {
+                    showError() }
+                else {
+                    showOffline()
+                }
+                DONE -> showContent()
+            }
+        })
+    }
+
+    private fun subscribeToViewModel() {
         viewModel.photosList.observe(this, Observer {
             adapter.submitList(it)
         })
-
-//        viewModel.loadFactory()
-//        viewModel.stateData.observe(this, Observer { stateData ->
-//            stateData?.let {
-//                if(stateData.data != null) {
-//                    adapter.setPhotos(stateData.data)
-//                }
-//
-////                We use StateData.State enum for transferring state with LiveData (success/loading/error)
-//                when(stateData.state) {
-//                    DONE ->
-//                        if(stateData.data!!.isEmpty()) {
-//
-////                          Empty data when offline may mean that data were not downloaded yet - so we show "offline" screen
-//                            if(!isOnline(applicationContext)) {
-//                                showOffline()
-//                            } else {
-//                                showEmpty()
-//                            }
-//                        } else {
-//                            showContent()
-//                        }
-//                    ERROR -> showError()
-//                    LOADING -> showLoading()
-//                }
-//
-//            }
-//        })
     }
 
     private fun initReceiver() {
@@ -115,25 +119,11 @@ class PhotoListActivity : BaseActivity<PhotoViewModel>() {
     }
 
     private fun initState() {
-//        txt_error.setOnClickListener { viewModel.retry() }
         viewModel.getState().observe(this, Observer { state ->
-//            progress_bar.visibility = if (viewModel.listIsEmpty() && state == StateData.State.LOADING) View.VISIBLE else View.GONE
-//            txt_error.visibility = if (viewModel.listIsEmpty() && state == StateData.State.ERROR) View.VISIBLE else View.GONE
             if (!viewModel.listIsEmpty()) {
-                adapter.setState(state ?: StateData.State.DONE)
+                adapter.setState(state ?: State.DONE)
             }
         })
-    }
-
-    protected fun load() {
-        if(viewModel.isCacheEmpty && !isOnline(applicationContext)) {
-            showOffline()
-            return
-        }
-
-//        showLoading()
-//        viewModel.load()
-//        viewModel.loadFactory()
     }
 
     override fun onDestroy() {
@@ -193,6 +183,7 @@ class PhotoListActivity : BaseActivity<PhotoViewModel>() {
         errorView.isVisible = false
         offlineView.isVisible = false
         loadingView.isVisible = false
+        launchingView.isVisible = false
     }
 
     private fun showContent() {
@@ -201,6 +192,7 @@ class PhotoListActivity : BaseActivity<PhotoViewModel>() {
         errorView.isVisible = false
         offlineView.isVisible = false
         loadingView.isVisible = false
+        launchingView.isVisible = false
     }
 
     private fun showError() {
@@ -209,6 +201,7 @@ class PhotoListActivity : BaseActivity<PhotoViewModel>() {
         recyclerView.isVisible = false
         offlineView.isVisible = false
         loadingView.isVisible = false
+        launchingView.isVisible = false
     }
 
     private fun showOffline() {
@@ -217,10 +210,27 @@ class PhotoListActivity : BaseActivity<PhotoViewModel>() {
         emptyView.isVisible = false
         recyclerView.isVisible = false
         loadingView.isVisible = false
+        launchingView.isVisible = false
+    }
+
+    private fun showLaunchingAnimation() {
+        launchingView.isVisible = true
+        loadingView.isVisible = false
+        offlineView.isVisible = false
+        errorView.isVisible = false
+        emptyView.isVisible = false
+        recyclerView.isVisible = false
     }
 
     private fun showLoading() {
-        loadingView.isVisible = true
+        if(justLaunched) {
+            showLaunchingAnimation()
+            justLaunched = false
+        } else {
+            loadingView.isVisible = true
+            launchingView.isVisible = false
+        }
+
         offlineView.isVisible = false
         errorView.isVisible = false
         emptyView.isVisible = false
