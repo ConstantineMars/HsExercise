@@ -15,12 +15,14 @@
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
+    <include layout="@layout/loading" />
+
     <include layout="@layout/empty" />
 
     <include layout="@layout/error" />
 
     <include layout="@layout/offline" />
 
-    <include layout="@layout/loading" />
+    <include layout="@layout/launching" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
